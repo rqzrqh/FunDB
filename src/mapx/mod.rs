@@ -162,7 +162,7 @@ where
     /// Imitate the behavior of '.iter()'
     #[inline(always)]
     pub fn iter(&self) -> Box<dyn Iterator<Item = (K, V)> + '_> {
-        todo!()
+        Box::new(self.in_disk.iter())
     }
 
     /// Check if a key is exists.

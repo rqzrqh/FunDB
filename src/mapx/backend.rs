@@ -122,7 +122,11 @@ where
     // Imitate the behavior of '.iter()'
     #[inline(always)]
     pub(super) fn iter(&self) -> MapxIter<K, V> {
-        todo!()
+        MapxIter{
+            iter: self.db.iter(),
+            _pd0: self._pd0,
+            _pd1: self._pd1,
+        }
     }
 
     pub(super) fn contains_key(&self, key: &K) -> bool {
@@ -177,7 +181,19 @@ where
 {
     type Item = (K, V);
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        match self.iter.next() {
+            Some(r) => {
+                match r {
+                    Ok((kk,vv)) => {
+                        let xx: K = bincode::deserialize(&kk.to_vec()).unwrap();
+                        let yy: V = serde_json::from_slice(&vv.to_vec()[..]).unwrap();
+                        Some((xx,yy))
+                    },
+                    Err(_e) => None,
+                }
+            },
+            None => None
+        }
     }
 }
 
@@ -187,7 +203,19 @@ where
     V: Clone + Eq + PartialEq + Serialize + DeserializeOwned + fmt::Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        todo!()
+        match self.iter.next_back() {
+            Some(r) => {
+                match r {
+                    Ok((kk,vv)) => {
+                        let xx: K = bincode::deserialize(&kk.to_vec()).unwrap();
+                        let yy: V = serde_json::from_slice(&vv.to_vec()[..]).unwrap();
+                        Some((xx,yy))
+                    },
+                    Err(_e) => None,
+                }
+            },
+            None => None
+        }
     }
 }
 
@@ -212,7 +240,7 @@ where
     V: Clone + Eq + PartialEq + Serialize + DeserializeOwned + fmt::Debug,
 {
     fn eq(&self, other: &Mapx<K, V>) -> bool {
-        todo!()
+        !self.iter().zip(other.iter()).any(|(i, j)| i != j)
     }
 }
 

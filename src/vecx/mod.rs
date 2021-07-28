@@ -131,7 +131,7 @@ where
     /// Imitate the behavior of '.iter()'
     #[inline(always)]
     pub fn iter(&self) -> Box<dyn Iterator<Item = T> + '_> {
-        todo!()
+        Box::new(self.in_disk.iter().map(|(_k, v)| v))
     }
 
     /// Flush data to disk
@@ -163,7 +163,7 @@ where
 {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        self.iter.next().map(|(_k,v)| v)
     }
 }
 
@@ -182,7 +182,7 @@ where
 {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        self.iter.next().map(|(_k, v)| v.clone())
     }
 }
 
